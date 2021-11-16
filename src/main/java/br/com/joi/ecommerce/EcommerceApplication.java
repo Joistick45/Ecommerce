@@ -9,10 +9,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import br.com.joi.ecommerce.domain.Categoria;
 import br.com.joi.ecommerce.domain.Cidade;
+import br.com.joi.ecommerce.domain.Cliente;
+import br.com.joi.ecommerce.domain.Endereco;
 import br.com.joi.ecommerce.domain.Estado;
 import br.com.joi.ecommerce.domain.Produto;
+import br.com.joi.ecommerce.domain.enums.TipoCliente;
 import br.com.joi.ecommerce.repositories.CategoriaRepository;
 import br.com.joi.ecommerce.repositories.CidadeRepository;
+import br.com.joi.ecommerce.repositories.ClienteRepository;
+import br.com.joi.ecommerce.repositories.EnderecoRepository;
 import br.com.joi.ecommerce.repositories.EstadoRepository;
 import br.com.joi.ecommerce.repositories.ProdutoRepository;
 
@@ -31,6 +36,12 @@ public class EcommerceApplication implements CommandLineRunner {
 	@Autowired
 	private CidadeRepository cidadeRepository;
 	
+	@Autowired
+	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private EnderecoRepository enderecoRepository;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(EcommerceApplication.class, args);
 	}
@@ -38,39 +49,50 @@ public class EcommerceApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		Categoria cat1 = new Categoria(null, "Informática");
-		Categoria cat2 = new Categoria(null, "Escritório");
+		Categoria categoria1 = new Categoria(null, "Informática");
+		Categoria categoria2 = new Categoria(null, "Escritório");
 		
-		Produto p1 = new Produto(null, "Computador", 2000.00);
-		Produto p2 = new Produto(null, "Impressora", 800.00);
-		Produto p3 = new Produto(null, "Mouse", 80.00);
+		Produto produto1 = new Produto(null, "Computador", 2000.00);
+		Produto produto2 = new Produto(null, "Impressora", 800.00);
+		Produto produto3 = new Produto(null, "Mouse", 80.00);
 		
-		cat1.getProdutos().addAll(Arrays.asList(p1,p2,p3));
-		cat2.getProdutos().addAll(Arrays.asList(p2));
+		categoria1.getProdutos().addAll(Arrays.asList(produto1,produto2,produto3));
+		categoria2.getProdutos().addAll(Arrays.asList(produto2));
 
-		p1.getCategorias().addAll(Arrays.asList(cat1));
-		p1.getCategorias().addAll(Arrays.asList(cat1,cat2));
-		p3.getCategorias().addAll(Arrays.asList(cat1));
+		produto1.getCategorias().addAll(Arrays.asList(categoria1));
+		produto1.getCategorias().addAll(Arrays.asList(categoria1,categoria2));
+		produto3.getCategorias().addAll(Arrays.asList(categoria1));
 		
-		categoriaRepository.saveAll(Arrays.asList(cat1,cat2));
-		produtoRepository.saveAll(Arrays.asList(p1,p2,p3));
+		categoriaRepository.saveAll(Arrays.asList(categoria1,categoria2));
+		produtoRepository.saveAll(Arrays.asList(produto1,produto2,produto3));
 		
-		Estado est1 = new Estado(null, "São Paulo");
-		Estado est2 = new Estado(null, "Rio de Janeiro");
-		Estado est3 = new Estado(null, "Minas Gerais");
+		Estado estado1 = new Estado(null, "São Paulo");
+		Estado estado2 = new Estado(null, "Rio de Janeiro");
+		Estado estado3 = new Estado(null, "Minas Gerais");
 				
-		Cidade c1 = new Cidade(null, "Santo André", est1);
-		Cidade c2 = new Cidade(null, "Barra da Tijuca", est2);
-		Cidade c3 = new Cidade(null, "Belo Horizonte", est3);
-		Cidade c4 = new Cidade(null, "São Bernardo", est1);
+		Cidade cidade1 = new Cidade(null, "Santo André", estado1);
+		Cidade cidade2 = new Cidade(null, "Barra da Tijuca", estado2);
+		Cidade cidade3 = new Cidade(null, "Belo Horizonte", estado3);
+		Cidade cidade4 = new Cidade(null, "São Bernardo", estado1);
 		
-		est1.getCidades().addAll(Arrays.asList(c1,c4));
-		est2.getCidades().addAll(Arrays.asList(c2));
-		est3.getCidades().addAll(Arrays.asList(c3));
+		estado1.getCidades().addAll(Arrays.asList(cidade1,cidade4));
+		estado2.getCidades().addAll(Arrays.asList(cidade2));
+		estado3.getCidades().addAll(Arrays.asList(cidade3));
 		
-		estadoRepository.saveAll(Arrays.asList(est1,est2,est3));
-		cidadeRepository.saveAll(Arrays.asList(c1,c2,c3,c4));
+		estadoRepository.saveAll(Arrays.asList(estado1,estado2,estado3));
+		cidadeRepository.saveAll(Arrays.asList(cidade1,cidade2,cidade3,cidade4));
+		
+		Cliente cliente1 = new Cliente(null,"Joi Macedo Pereira Neto", "joi@empresa.com","888888888-88", TipoCliente.PESSOAFISICA);
+		cliente1.getTelefones().addAll(Arrays.asList("1144445555","1144446666"));
+		
+		Endereco endereco1 = new Endereco(null, "Rua das Flores", "100", "Apto 100","Vila Paulista" , "09000777", cliente1, cidade1);
+		Endereco endereco2 = new Endereco(null, "Rua das Pedras", "200", "Apto 200","Vila Carioca" ,"09000888", cliente1, cidade2);
 
+		cliente1.getEnderecos().addAll(Arrays.asList(endereco1,endereco2));
+		
+		clienteRepository.saveAll(Arrays.asList(cliente1));
+		enderecoRepository.saveAll(Arrays.asList(endereco1,endereco2));
+		
 	}
 
 }
