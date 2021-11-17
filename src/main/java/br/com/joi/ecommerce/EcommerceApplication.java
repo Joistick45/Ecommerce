@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
 import br.com.joi.ecommerce.domain.Categoria;
 import br.com.joi.ecommerce.domain.Cidade;
@@ -30,8 +31,11 @@ import br.com.joi.ecommerce.repositories.ItemPedidoRepository;
 import br.com.joi.ecommerce.repositories.PagamentoRepository;
 import br.com.joi.ecommerce.repositories.PedidoRepository;
 import br.com.joi.ecommerce.repositories.ProdutoRepository;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
+@EnableSpringDataWebSupport
+@EnableSwagger2
 public class EcommerceApplication implements CommandLineRunner {
 
 	@Autowired
