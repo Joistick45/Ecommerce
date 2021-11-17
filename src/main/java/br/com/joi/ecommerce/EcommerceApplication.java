@@ -1,5 +1,6 @@
 package br.com.joi.ecommerce;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,35 +13,41 @@ import br.com.joi.ecommerce.domain.Cidade;
 import br.com.joi.ecommerce.domain.Cliente;
 import br.com.joi.ecommerce.domain.Endereco;
 import br.com.joi.ecommerce.domain.Estado;
+import br.com.joi.ecommerce.domain.Pagamento;
+import br.com.joi.ecommerce.domain.PagamentoComBoleto;
+import br.com.joi.ecommerce.domain.PagamentoComCartao;
+import br.com.joi.ecommerce.domain.Pedido;
 import br.com.joi.ecommerce.domain.Produto;
+import br.com.joi.ecommerce.domain.enums.EstadoPagamento;
 import br.com.joi.ecommerce.domain.enums.TipoCliente;
 import br.com.joi.ecommerce.repositories.CategoriaRepository;
 import br.com.joi.ecommerce.repositories.CidadeRepository;
 import br.com.joi.ecommerce.repositories.ClienteRepository;
 import br.com.joi.ecommerce.repositories.EnderecoRepository;
 import br.com.joi.ecommerce.repositories.EstadoRepository;
+import br.com.joi.ecommerce.repositories.PagamentoRepository;
+import br.com.joi.ecommerce.repositories.PedidoRepository;
 import br.com.joi.ecommerce.repositories.ProdutoRepository;
 
 @SpringBootApplication
 public class EcommerceApplication implements CommandLineRunner {
 
 	@Autowired
-	private CategoriaRepository categoriaRepository;
-	
+	private CategoriaRepository categoriaRepository;	
 	@Autowired
 	private ProdutoRepository produtoRepository;
-
 	@Autowired
 	private EstadoRepository estadoRepository;
-
 	@Autowired
 	private CidadeRepository cidadeRepository;
-	
 	@Autowired
-	private ClienteRepository clienteRepository;
-	
+	private ClienteRepository clienteRepository;	
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(EcommerceApplication.class, args);
@@ -93,6 +100,23 @@ public class EcommerceApplication implements CommandLineRunner {
 		clienteRepository.saveAll(Arrays.asList(cliente1));
 		enderecoRepository.saveAll(Arrays.asList(endereco1,endereco2));
 		
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+		
+		Pedido pedido1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cliente1, endereco1);
+		Pedido pedido2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cliente1, endereco2);
+		
+		Pagamento pagamento1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, pedido1, 6);
+		pedido1.setPagamento(pagamento1);
+		
+		Pagamento pagamento2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, pedido2, sdf.parse("20/10/2017 00:00"), null);
+		pedido2.setPagamento(pagamento2);
+		
+		cliente1.getPedidos().addAll(Arrays.asList(pedido1,pedido2));
+		
+		pedidoRepository.saveAll(Arrays.asList(pedido1,pedido2));
+		pagamentoRepository.saveAll(Arrays.asList(pagamento1,pagamento2));
+				
 	}
 
 }
