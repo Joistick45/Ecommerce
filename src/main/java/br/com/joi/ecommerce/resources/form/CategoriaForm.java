@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import br.com.joi.ecommerce.domain.Categoria;
+import br.com.joi.ecommerce.repositories.CategoriaRepository;
 
 public class CategoriaForm {
 
@@ -23,6 +24,15 @@ public class CategoriaForm {
 	public Categoria convertFormToObj() {
 		return new Categoria(null, nome);
 	}
-	
+
+	public Categoria atualizar(Integer id, CategoriaRepository categoriaRepository) {
+		Categoria categoria = categoriaRepository.getById(id);
+		
+		categoria.setNome(this.nome);
+		System.out.println(this.nome);
+		
+		return categoria;	
+	}
+
 	
 }
