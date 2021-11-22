@@ -1,13 +1,18 @@
 package br.com.joi.ecommerce.resources;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,20 +41,16 @@ public class CategoriaResource {
 	@Autowired
 	private CategoriaRepository categoriaRepository;
 
+	/*
+	categorias?page=0&size=10&sort=id,desc
+	*/
 	@GetMapping
-	public List<CategoriaDto> findAll(){
-		List<Categoria> categorias = categoriaRepository.findAll();
-		return CategoriaDto.converterToDto(categorias);
-	}
-	
+	@Cacheable(value = "listaCategorias")
+	public Page<CategoriaDto> findAllCategorias(@RequestParam(required = false) String teste, 
+			@PageableDefault (sort = "id", direction = Direction.ASC, size = 10)Pageable paginacao){
 
-	@PostMapping
-	public ResponseEntity<CategoriaDto> cadastrar(@RequestBody @Valid CategoriaForm form, UriComponentsBuilder uriBuilder){
-		Categoria categoria = form.convertFormToObj();
-		categoriaRepository.save(categoria);
-		
-		URI uri = uriBuilder.path("/categorias/{id}").buildAndExpand(categoria.getId()).toUri();
-		return ResponseEntity.created(uri).body(new CategoriaDto(categoria));
+		Page<Categoria> categorias = categoriaRepository.findAll(paginacao);
+		return CategoriaDto.converterToPage(categorias);
 	}
 	
 	@GetMapping(value="/{id}")
@@ -57,30 +59,48 @@ public class CategoriaResource {
 			return ResponseEntity.ok().body(objetoBuscado);	
 	}
 	
+	@PostMapping
+	@CacheEvict(value = "listaCategorias", allEntries = true)
+	public ResponseEntity<CategoriaDto> cadastraCategoria(@RequestBody @Valid CategoriaForm form, UriComponentsBuilder uriBuilder){
+		Categoria categoria = form.convertFormToObj();
+		categoriaRepository.save(categoria);
+		
+		URI uri = uriBuilder.path("/categorias/{id}").buildAndExpand(categoria.getId()).toUri();
+		return ResponseEntity.created(uri).body(new CategoriaDto(categoria));
+	}
+	
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<CategoriaDto> atualizar(@PathVariable Integer id,
+	public ResponseEntity<CategoriaDto> atualizaCategoria(@PathVariable Integer id,
 			@RequestBody @Valid CategoriaForm form){
 
 		Optional<Categoria> optional = categoriaRepository.findById(id);
 			
-			if(optional.isPresent()) {
-			Categoria categoriaAtualizada = form.atualizar(id, categoriaRepository);
-			return ResponseEntity.ok(new CategoriaDto(categoriaAtualizada));
-			} else {
-			return ResponseEntity.notFound().build();
-			}
+				if(optional.isPresent()) {
+				Categoria categoriaAtualizada = form.atualizar(id, categoriaRepository);
+				return ResponseEntity.ok(new CategoriaDto(categoriaAtualizada));
+				} else {
+				return ResponseEntity.notFound().build();
+				}
 
 	}
 	
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> deletaCategoriaSeNaoTemProdutoAtrelado(@PathVariable Integer id){
-		categoriaRepository.deleteById(id);
-		return ResponseEntity.ok().build();
+		
+		Optional<Categoria> optional = categoriaRepository.findById(id);
+		
+			if(optional.isPresent()) {
+				categoriaRepository.deleteById(id);
+				return ResponseEntity.ok().build();
+			} else {
+			return ResponseEntity.notFound().build();
+			}
+
 	}
 	
-	@DeleteMapping("/{id}/all")
+	@DeleteMapping("/{id}/products")
 	@Transactional
 	public ResponseEntity<?> deletaCategoriaESeusProdutos(@PathVariable Integer id){
 		//TODO

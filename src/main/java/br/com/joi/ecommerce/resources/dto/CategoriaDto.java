@@ -3,6 +3,8 @@ package br.com.joi.ecommerce.resources.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+
 import br.com.joi.ecommerce.domain.Categoria;
 
 public class CategoriaDto {
@@ -29,5 +31,11 @@ public class CategoriaDto {
 				.map(CategoriaDto::new)
 				.collect(Collectors.toList());
 	}
+	
+	public static Page<CategoriaDto> converterToPage(Page<Categoria> categorias) {
+		return categorias.map(CategoriaDto::new);
+	}
+	
+	
 
 }
