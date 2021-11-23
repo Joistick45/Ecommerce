@@ -47,7 +47,7 @@ public class CategoriaResource {
 	@GetMapping
 	@Cacheable(value = "listaCategorias")
 	public Page<CategoriaDto> findAllCategorias(@RequestParam(required = false) String teste, 
-			@PageableDefault (sort = "id", direction = Direction.ASC, size = 10)Pageable paginacao){
+			@PageableDefault (sort = "id", direction = Direction.ASC, size = 10) Pageable paginacao){
 
 		Page<Categoria> categorias = categoriaRepository.findAll(paginacao);
 		return CategoriaDto.converterToPage(categorias);
