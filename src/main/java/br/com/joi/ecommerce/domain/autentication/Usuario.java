@@ -1,4 +1,4 @@
-package br.com.joi.ecommerce.domain.autenticacao;
+package br.com.joi.ecommerce.domain.autentication;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +28,7 @@ public class Usuario implements UserDetails {
 	private String senha;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	private List<Profile> perfis = new ArrayList<>();
+	private List<Perfil> perfis = new ArrayList<>();
 	
 	public Integer getId() {
 		return id;

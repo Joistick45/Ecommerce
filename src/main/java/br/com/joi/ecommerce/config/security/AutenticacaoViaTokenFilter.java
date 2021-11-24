@@ -11,7 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import br.com.joi.ecommerce.domain.autenticacao.Usuario;
+import br.com.joi.ecommerce.domain.autentication.Usuario;
 import br.com.joi.ecommerce.repositories.UsuarioRepository;
 
 public class AutenticacaoViaTokenFilter extends OncePerRequestFilter {

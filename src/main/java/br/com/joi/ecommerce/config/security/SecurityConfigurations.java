@@ -19,7 +19,7 @@ import br.com.joi.ecommerce.repositories.UsuarioRepository;
 
 @EnableWebSecurity
 @Configuration
-//@Profile(value = {"prod","test"}) //-Dspring.profiles.active=prod
+@Profile(value = {"prod","test"})
 public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
 	
 	
@@ -59,7 +59,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
 		
 		.antMatchers(HttpMethod.GET,"/categorias").permitAll()
 		.antMatchers(HttpMethod.GET,"/categorias/*").permitAll()
-		.antMatchers(HttpMethod.POST,"/auth").permitAll()		
+		.antMatchers(HttpMethod.POST,"/categorias").hasRole("ADMINISTRATOR")
+		.antMatchers(HttpMethod.DELETE,"/categorias/*").hasRole("ADMINISTRATOR")
+		.antMatchers(HttpMethod.POST,"/auth").permitAll()
 		.anyRequest().authenticated()
 		
 		.and().csrf().disable()				//disable cross-site request forwarding
@@ -75,6 +77,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/*.html",
+									"/h2-console/**",
 									"/v2/api-docs",
 									"/webjars/**",
 									"/configuration/**",
