@@ -82,7 +82,6 @@ public class CategoriaResource {
 				} else {
 				return ResponseEntity.notFound().build();
 				}
-
 	}
 	
 	@DeleteMapping("/{id}")
