@@ -46,7 +46,7 @@ public class CategoriaResource {
 	*/
 	@GetMapping
 	@Cacheable(value = "listaCategorias")
-	public Page<CategoriaDto> findAllCategorias(@RequestParam(required = false) String teste, 
+	public Page<CategoriaDto> findAllCategorias(@RequestParam(required = false) String id, 
 			@PageableDefault (sort = "id", direction = Direction.ASC, size = 10) Pageable paginacao){
 
 		Page<Categoria> categorias = categoriaRepository.findAll(paginacao);
@@ -82,21 +82,6 @@ public class CategoriaResource {
 				} else {
 				return ResponseEntity.notFound().build();
 				}
-	}
-	
-	@DeleteMapping("/{id}")
-	@Transactional
-	public ResponseEntity<?> deletaCategoriaSeNaoTemProdutoAtrelado(@PathVariable Integer id){
-		
-		Optional<Categoria> optional = categoriaRepository.findById(id);
-		
-			if(optional.isPresent()) {
-				categoriaRepository.deleteById(id);
-				return ResponseEntity.ok().build();
-			} else {
-			return ResponseEntity.notFound().build();
-			}
-
 	}
 	
 	@DeleteMapping("/{id}/products")

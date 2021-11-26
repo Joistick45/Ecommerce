@@ -13,12 +13,10 @@ import br.com.joi.ecommerce.services.exceptions.ObjectNotFoundException;
 public class PedidoService {
 	
 	@Autowired
-	private PedidoRepository categoriaRepository;
+	private PedidoRepository pedidoRepository;
 	
 	public Pedido buscarPorId(Integer id) {
-		
-		Optional<Pedido> pedidoBuscado = categoriaRepository.findById(id);
-		
+		Optional<Pedido> pedidoBuscado = pedidoRepository.findById(id);
 		return pedidoBuscado.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Pedido.class.getName()));
 	}

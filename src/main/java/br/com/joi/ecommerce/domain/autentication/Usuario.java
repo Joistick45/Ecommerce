@@ -18,7 +18,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class Usuario implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	private String nome;
@@ -26,9 +27,24 @@ public class Usuario implements UserDetails {
 	private String email;
 	
 	private String senha;
+	
+	public Usuario() {
+	}
+	
+	public Usuario(Integer id, String nome, String email, String senha) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.email = email;
+		this.senha = senha;
+	}
+
+
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Perfil> perfis = new ArrayList<>();
+	
+	
 	
 	public Integer getId() {
 		return id;

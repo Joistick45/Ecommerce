@@ -55,7 +55,10 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
+		http.headers().frameOptions().sameOrigin();
+		
 		http.authorizeRequests()
+
 		
 		.antMatchers(HttpMethod.GET,"/categorias").permitAll()
 		.antMatchers(HttpMethod.GET,"/categorias/*").permitAll()
