@@ -88,6 +88,16 @@ public class Produto implements Serializable {
 	public List<Categoria> getCategorias() {
 		return categorias;
 	}
+	
+	public List<String> getNomeCategorias() {
+		List<String> nomeCategorias = new ArrayList<>();
+		
+		for (Categoria categoria : categorias) {
+			nomeCategorias.add(categoria.getNome());
+		}	
+		return nomeCategorias;
+		
+	}
 
 	public void setCategorias(List<Categoria> categorias) {
 		this.categorias = categorias;

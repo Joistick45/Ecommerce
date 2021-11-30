@@ -77,7 +77,7 @@ public class EcommerceApplication implements CommandLineRunner {
 		categoria2.getProdutos().addAll(Arrays.asList(produto2));
 
 		produto1.getCategorias().addAll(Arrays.asList(categoria1));
-		produto1.getCategorias().addAll(Arrays.asList(categoria1,categoria2));
+		produto2.getCategorias().addAll(Arrays.asList(categoria1,categoria2));
 		produto3.getCategorias().addAll(Arrays.asList(categoria1));
 		
 		categoriaRepository.saveAll(Arrays.asList(categoria1,categoria2));

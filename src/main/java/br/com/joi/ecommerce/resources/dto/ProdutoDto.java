@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 
-import br.com.joi.ecommerce.domain.Categoria;
 import br.com.joi.ecommerce.domain.Produto;
 
 public class ProdutoDto {
@@ -14,17 +13,14 @@ public class ProdutoDto {
 	private Integer id;
 	private String nome;
 	private Double preco;
-	
-	
-	private List<Categoria> categorias = new ArrayList<>();
+	private List<String> categorias = new ArrayList<>();
 	
 	
 	public ProdutoDto(Produto produto) {
 		this.id = produto.getId();
 		this.nome = produto.getNome();
-		this.preco = produto.getPreco();
-		this.categorias = produto.getCategorias();
-		
+		this.preco = produto.getPreco();	
+		this.categorias =  produto.getNomeCategorias();
 	}
 
 
@@ -37,7 +33,7 @@ public class ProdutoDto {
 	public Double getPreco() {
 		return preco;
 	}
-	public List<Categoria> getCategorias() {
+	public List<String> getCategorias() {
 		return categorias;
 	}
 	

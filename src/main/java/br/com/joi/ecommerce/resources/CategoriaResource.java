@@ -87,7 +87,6 @@ public class CategoriaResource {
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> deletaCategoria(@PathVariable Integer id){
-		
 		Optional<Categoria> optional = categoriaRepository.findById(id);
 		
 		if(optional.isPresent()) {
@@ -95,10 +94,7 @@ public class CategoriaResource {
 			return ResponseEntity.ok().build();
 			} else {
 			return ResponseEntity.notFound().build();
-			}
-		
-	
-		
+			}	
 	}
 	
 	

@@ -36,10 +36,10 @@ import br.com.joi.ecommerce.services.ProdutoService;
 public class ProdutoResource {
 	
 	@Autowired
-	private ProdutoService produtoService;
+	private ProdutoRepository produtoRepository;
 	
 	@Autowired
-	private ProdutoRepository produtoRepository;
+	private ProdutoService produtoService;
 
 	/*
 	categorias?page=0&size=10&sort=id,desc
@@ -54,8 +54,8 @@ public class ProdutoResource {
 	}
 	
 	@GetMapping(value="/{id}")
-	public ResponseEntity<?> findProdutoComCategorias(@PathVariable Integer id) {
-			Produto objetoBuscado = produtoService.buscarPorIdListandoAsCategorias(id);
+	public ResponseEntity<?> findCategoriasComProdutos(@PathVariable Integer id) {
+			Produto objetoBuscado = produtoService.buscarPorId(id);
 			return ResponseEntity.ok().body(objetoBuscado);	
 	}
 	
@@ -73,7 +73,6 @@ public class ProdutoResource {
 	@Transactional
 	public ResponseEntity<ProdutoDto> atualizaCategoria(@PathVariable Integer id,
 			@RequestBody @Valid ProdutoForm form){
-
 		Optional<Produto> optional = produtoRepository.findById(id);
 			
 				if(optional.isPresent()) {
@@ -84,11 +83,17 @@ public class ProdutoResource {
 				}
 	}
 	
-	@DeleteMapping("/{id}/products")
+	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> deletaCategoriaESeusProdutos(@PathVariable Integer id){
-		//TODO
-		return null;
+	public ResponseEntity<?> deletaProduto(@PathVariable Integer id){
+		Optional<Produto> optional = produtoRepository.findById(id);
+		
+		if(optional.isPresent()) {
+			produtoRepository.deleteById(id);
+			return ResponseEntity.ok().build();
+			} else {
+			return ResponseEntity.notFound().build();
+			}	
 	}
 	
 	
