@@ -1,6 +1,9 @@
 package br.com.joi.ecommerce.resources;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -25,7 +28,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.joi.ecommerce.domain.Categoria;
 import br.com.joi.ecommerce.domain.Produto;
+import br.com.joi.ecommerce.repositories.CategoriaRepository;
 import br.com.joi.ecommerce.repositories.ProdutoRepository;
 import br.com.joi.ecommerce.resources.dto.ProdutoDto;
 import br.com.joi.ecommerce.resources.form.ProdutoForm;
@@ -34,9 +39,13 @@ import br.com.joi.ecommerce.services.ProdutoService;
 @RestController
 @RequestMapping(value="/produtos")
 public class ProdutoResource {
-	
+
 	@Autowired
 	private ProdutoRepository produtoRepository;
+	
+
+	@Autowired
+	private CategoriaRepository categoriaRepository;
 	
 	@Autowired
 	private ProdutoService produtoService;
@@ -59,29 +68,47 @@ public class ProdutoResource {
 			return ResponseEntity.ok().body(objetoBuscado);	
 	}
 	
+	
 	@PostMapping
 	@CacheEvict(value = "listaProdutos", allEntries = true)
-	public ResponseEntity<ProdutoDto> cadastraCategoria(@RequestBody @Valid ProdutoForm form, UriComponentsBuilder uriBuilder){
-		Produto produto = form.convertFormToObj();
-		produtoRepository.save(produto);
+	public ResponseEntity<ProdutoDto> cadastraProduto(
+			@RequestBody @Valid ProdutoForm form, UriComponentsBuilder uriBuilder){
 		
-		URI uri = uriBuilder.path("/categorias/{id}").buildAndExpand(produto.getId()).toUri();
+		Produto produto = form.convertFormToObj();	
+		List<Integer> categoriasId = form.getCategoriasByFormId();
+	
+		for (Integer categoriaId : categoriasId) {
+			Categoria categoria = categoriaRepository.getById(categoriaId);
+			
+			categoria.getProdutos().addAll(Arrays.asList(produto));
+			produto.getCategorias().addAll(Arrays.asList(categoria));
+			
+			categoriaRepository.saveAll(Arrays.asList(categoria));
+			produtoRepository.saveAll(Arrays.asList(produto));
+		}
+
+		
+		
+		URI uri = uriBuilder.path("/protudos/{id}").buildAndExpand(produto.getId()).toUri();
 		return ResponseEntity.created(uri).body(new ProdutoDto(produto));
+
+
 	}
 	
-	@PutMapping("/{id}")
-	@Transactional
-	public ResponseEntity<ProdutoDto> atualizaCategoria(@PathVariable Integer id,
-			@RequestBody @Valid ProdutoForm form){
-		Optional<Produto> optional = produtoRepository.findById(id);
-			
-				if(optional.isPresent()) {
-				Produto produtoAtualizado = form.atualizar(id, produtoRepository);
-				return ResponseEntity.ok(new ProdutoDto(produtoAtualizado));
-				} else {
-				return ResponseEntity.notFound().build();
-				}
-	}
+	
+//	@PutMapping("/{id}")
+//	@Transactional
+//	public ResponseEntity<ProdutoDto> atualizaProduto(@PathVariable Integer id,
+//			@RequestBody @Valid ProdutoForm form){
+//		Optional<Produto> optional = produtoRepository.findById(id);
+//			
+//				if(optional.isPresent()) {
+//				Produto produtoAtualizado = form.atualizar(id, produtoRepository);
+//				return ResponseEntity.ok(new ProdutoDto(produtoAtualizado));
+//				} else {
+//				return ResponseEntity.notFound().build();
+//				}
+//	}
 	
 	@DeleteMapping("/{id}")
 	@Transactional

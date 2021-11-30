@@ -39,12 +39,8 @@ public class Usuario implements UserDetails {
 		this.senha = senha;
 	}
 
-
-
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Perfil> perfis = new ArrayList<>();
-	
-	
 	
 	public Integer getId() {
 		return id;
