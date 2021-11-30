@@ -84,11 +84,21 @@ public class CategoriaResource {
 				}
 	}
 	
-	@DeleteMapping("/{id}/products")
+	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> deletaCategoriaESeusProdutos(@PathVariable Integer id){
-		//TODO
-		return null;
+	public ResponseEntity<?> deletaCategoria(@PathVariable Integer id){
+		
+		Optional<Categoria> optional = categoriaRepository.findById(id);
+		
+		if(optional.isPresent()) {
+			categoriaRepository.deleteById(id);
+			return ResponseEntity.ok().build();
+			} else {
+			return ResponseEntity.notFound().build();
+			}
+		
+	
+		
 	}
 	
 	

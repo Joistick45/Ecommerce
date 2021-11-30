@@ -84,7 +84,7 @@ public class Produto implements Serializable {
 	public void setPreco(Double preco) {
 		this.preco = preco;
 	}
-
+	
 	public List<Categoria> getCategorias() {
 		return categorias;
 	}
