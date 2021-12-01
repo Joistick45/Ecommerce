@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class Cidade implements Serializable{
+
+
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -75,6 +77,9 @@ public class Cidade implements Serializable{
 		return Objects.equals(id, other.id);
 	}
 		
-	
+	@Override
+	public String toString() {
+		return "Cidade [id=" + id + ", nome=" + nome + ", estado=" + estado + "]";
+	}
 	
 }

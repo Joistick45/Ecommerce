@@ -1,6 +1,7 @@
 package br.com.joi.ecommerce.resources;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -19,9 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.joi.ecommerce.domain.Cliente;
+import br.com.joi.ecommerce.domain.Endereco;
+import br.com.joi.ecommerce.repositories.CidadeRepository;
 import br.com.joi.ecommerce.repositories.ClienteRepository;
+import br.com.joi.ecommerce.repositories.EnderecoRepository;
+import br.com.joi.ecommerce.repositories.EstadoRepository;
 import br.com.joi.ecommerce.resources.dto.ClienteDto;
+import br.com.joi.ecommerce.resources.dto.EnderecoDto;
 import br.com.joi.ecommerce.resources.form.ClienteForm;
+import br.com.joi.ecommerce.resources.form.EnderecoForm;
 import br.com.joi.ecommerce.services.ClienteService;
 
 @RestController
@@ -30,9 +37,15 @@ public class ClienteResource {
 	
 	@Autowired
 	private ClienteService clienteService;
-	
 	@Autowired
 	private ClienteRepository clienteRepository;
+	@Autowired
+	private EnderecoRepository enderecoRespository;	
+	@Autowired
+	private EstadoRepository estadoRepository;
+	@Autowired
+	private CidadeRepository cidadeRepository;
+	
 	
 	@GetMapping(value="/{id}")
 	public ResponseEntity<?> find(@PathVariable Integer id) {
@@ -44,7 +57,7 @@ public class ClienteResource {
 	public ResponseEntity<ClienteDto> cadastraCliente(@RequestBody @Valid ClienteForm form, UriComponentsBuilder uriBuilder){
 		Cliente cliente = form.convertFormToObj();
 		clienteRepository.save(cliente);	
-		URI uri = uriBuilder.path("/categorias/{id}").buildAndExpand(cliente.getId()).toUri();
+		URI uri = uriBuilder.path("/clientes/{id}").buildAndExpand(cliente.getId()).toUri();
 		return ResponseEntity.created(uri).body(new ClienteDto(cliente));
 	}
 	
@@ -74,5 +87,25 @@ public class ClienteResource {
 			return ResponseEntity.notFound().build();
 			}	
 	}
+	
+	@GetMapping(value="/{id}/enderecos")
+	public ResponseEntity<?> findAllEnderecosDeUmCliente(@PathVariable Integer id) {
+			Cliente clienteBuscado = clienteService.buscarPorId(id);
+			List<Endereco> enderecosBuscados = clienteBuscado.getEnderecos();
+			return ResponseEntity.ok().body(enderecosBuscados);	
+	}
+	
+	@PostMapping(value="/{clienteId}/enderecos")
+	public ResponseEntity<EnderecoDto> cadastraEnderecoParaCliente(@PathVariable("clienteId") Integer clienteId, @RequestBody @Valid EnderecoForm form, UriComponentsBuilder uriBuilder){
+
+		Cliente cliente = clienteRepository.getById(clienteId);
+		Endereco endereco = form.convertFormToObj(cliente,estadoRepository,cidadeRepository);	
+		enderecoRespository.save(endereco);		
+		
+		URI uri = uriBuilder.path("/clientes/{id}").buildAndExpand(endereco.getId()).toUri();
+		return ResponseEntity.created(uri).body(new EnderecoDto(endereco));
+	}
+	
+	
 
 }
