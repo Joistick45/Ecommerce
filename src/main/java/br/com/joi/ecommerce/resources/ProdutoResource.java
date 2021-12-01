@@ -1,7 +1,6 @@
 package br.com.joi.ecommerce.resources;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -85,40 +84,43 @@ public class ProdutoResource {
 			
 			categoriaRepository.saveAll(Arrays.asList(categoria));
 			produtoRepository.saveAll(Arrays.asList(produto));
-		}
-
-		
-		
+			
+		}	
+	
 		URI uri = uriBuilder.path("/protudos/{id}").buildAndExpand(produto.getId()).toUri();
 		return ResponseEntity.created(uri).body(new ProdutoDto(produto));
-
-
 	}
 	
 	
-//	@PutMapping("/{id}")
-//	@Transactional
-//	public ResponseEntity<ProdutoDto> atualizaProduto(@PathVariable Integer id,
-//			@RequestBody @Valid ProdutoForm form){
-//		Optional<Produto> optional = produtoRepository.findById(id);
-//			
-//				if(optional.isPresent()) {
-//				Produto produtoAtualizado = form.atualizar(id, produtoRepository);
-//				return ResponseEntity.ok(new ProdutoDto(produtoAtualizado));
-//				} else {
-//				return ResponseEntity.notFound().build();
-//				}
-//	}
+	@PutMapping("/{id}")
+	@Transactional
+	@CacheEvict(value = "listaProdutos", allEntries = true)
+	public ResponseEntity<ProdutoDto> atualizaProduto(@PathVariable Integer id,
+			@RequestBody @Valid ProdutoForm form){
+		
+		Optional<Produto> optional = produtoRepository.findById(id);
+		
+			if(optional.isPresent()) {
+				Produto produtoAtualizado = form.atualizar(id, produtoRepository,categoriaRepository);
+				return ResponseEntity.ok(new ProdutoDto(produtoAtualizado));
+			} else {
+				return ResponseEntity.notFound().build();
+			}
+	}
 	
 	@DeleteMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "listaProdutos", allEntries = true)
 	public ResponseEntity<?> deletaProduto(@PathVariable Integer id){
 		Optional<Produto> optional = produtoRepository.findById(id);
 		
 		if(optional.isPresent()) {
 			produtoRepository.deleteById(id);
+			
 			return ResponseEntity.ok().build();
+			
 			} else {
+				
 			return ResponseEntity.notFound().build();
 			}	
 	}

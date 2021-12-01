@@ -26,11 +26,8 @@ public class CategoriaForm {
 	}
 
 	public Categoria atualizar(Integer id, CategoriaRepository categoriaRepository) {
-		Categoria categoria = categoriaRepository.getById(id);
-		
+		Categoria categoria = categoriaRepository.getById(id);	
 		categoria.setNome(this.nome);
-		System.out.println(this.nome);
-		
 		return categoria;	
 	}
 

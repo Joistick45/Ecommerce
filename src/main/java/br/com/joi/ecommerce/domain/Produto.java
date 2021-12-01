@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.com.joi.ecommerce.repositories.CategoriaRepository;
+
 @Entity
 public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -96,9 +98,19 @@ public class Produto implements Serializable {
 			nomeCategorias.add(categoria.getNome());
 		}	
 		return nomeCategorias;
-		
 	}
-
+	
+	public void setCategoriaById(List<Integer> listaCategoriasId, CategoriaRepository categoriaRepository){	
+		List<Categoria> categoriasAtualizadas = new ArrayList<>();
+	
+		for (Integer categoriaId : listaCategoriasId) {
+			categoriasAtualizadas.add(categoriaRepository.getById(categoriaId));
+		}
+		
+		categoriaRepository.saveAll(categoriasAtualizadas);
+		this.categorias = categoriasAtualizadas;
+	}
+	
 	public void setCategorias(List<Categoria> categorias) {
 		this.categorias = categorias;
 	}

@@ -7,6 +7,5 @@ import br.com.joi.ecommerce.domain.Categoria;
 
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Integer> {
-	
 
 }

@@ -71,6 +71,7 @@ public class CategoriaResource {
 	
 	@PutMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "listaCategorias", allEntries = true)
 	public ResponseEntity<CategoriaDto> atualizaCategoria(@PathVariable Integer id,
 			@RequestBody @Valid CategoriaForm form){
 
@@ -86,6 +87,7 @@ public class CategoriaResource {
 	
 	@DeleteMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "listaCategorias", allEntries = true)
 	public ResponseEntity<?> deletaCategoria(@PathVariable Integer id){
 		Optional<Categoria> optional = categoriaRepository.findById(id);
 		

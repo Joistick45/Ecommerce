@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.joi.ecommerce.domain.Produto;
+import br.com.joi.ecommerce.repositories.CategoriaRepository;
+import br.com.joi.ecommerce.repositories.ProdutoRepository;
 
 public class ProdutoForm {
 
@@ -51,6 +53,16 @@ public class ProdutoForm {
 	@Override
 	public String toString() {
 		return "ProdutoForm [nome=" + nome + ", preco=" + preco + ", categorias=" + categorias + "]";
+	}
+
+	public Produto atualizar(Integer id, ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository) {
+		Produto produto = produtoRepository.getById(id);
+		produto.setNome(this.nome);
+		produto.setPreco(this.preco);
+		
+		produto.setCategoriaById(this.categorias, categoriaRepository);
+		
+		return produto;
 	}
 
 
