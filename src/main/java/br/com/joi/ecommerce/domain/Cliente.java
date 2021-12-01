@@ -99,6 +99,11 @@ public class Cliente implements Serializable{
 	public void setTipo(TipoCliente tipo) {
 		this.tipo = tipo.getCod();
 	}
+	
+	public void setTipo(Integer tipo) {
+		this.tipo = tipo;
+	}
+
 
 	public List<Endereco> getEnderecos() {
 		return enderecos;
@@ -140,6 +145,7 @@ public class Cliente implements Serializable{
 		Cliente other = (Cliente) obj;
 		return Objects.equals(id, other.id);
 	}
+
 
 
 

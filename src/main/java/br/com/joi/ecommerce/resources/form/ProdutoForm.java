@@ -16,6 +16,8 @@ public class ProdutoForm {
 
 	private List<Integer> categorias;
 
+	
+	
 	public String getNome() {
 		return nome;
 	}
@@ -57,9 +59,9 @@ public class ProdutoForm {
 
 	public Produto atualizar(Integer id, ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository) {
 		Produto produto = produtoRepository.getById(id);
+		
 		produto.setNome(this.nome);
 		produto.setPreco(this.preco);
-		
 		produto.setCategoriaById(this.categorias, categoriaRepository);
 		
 		return produto;

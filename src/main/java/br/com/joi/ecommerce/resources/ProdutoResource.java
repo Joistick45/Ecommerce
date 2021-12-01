@@ -62,7 +62,7 @@ public class ProdutoResource {
 	}
 	
 	@GetMapping(value="/{id}")
-	public ResponseEntity<?> findCategoriasComProdutos(@PathVariable Integer id) {
+	public ResponseEntity<?> findProdutosComCategorias(@PathVariable Integer id) {
 			Produto objetoBuscado = produtoService.buscarPorId(id);
 			return ResponseEntity.ok().body(objetoBuscado);	
 	}
@@ -97,7 +97,6 @@ public class ProdutoResource {
 	@CacheEvict(value = "listaProdutos", allEntries = true)
 	public ResponseEntity<ProdutoDto> atualizaProduto(@PathVariable Integer id,
 			@RequestBody @Valid ProdutoForm form){
-		
 		Optional<Produto> optional = produtoRepository.findById(id);
 		
 			if(optional.isPresent()) {
@@ -116,11 +115,8 @@ public class ProdutoResource {
 		
 		if(optional.isPresent()) {
 			produtoRepository.deleteById(id);
-			
 			return ResponseEntity.ok().build();
-			
-			} else {
-				
+			} else {	
 			return ResponseEntity.notFound().build();
 			}	
 	}

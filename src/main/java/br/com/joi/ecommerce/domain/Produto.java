@@ -102,11 +102,9 @@ public class Produto implements Serializable {
 	
 	public void setCategoriaById(List<Integer> listaCategoriasId, CategoriaRepository categoriaRepository){	
 		List<Categoria> categoriasAtualizadas = new ArrayList<>();
-	
 		for (Integer categoriaId : listaCategoriasId) {
 			categoriasAtualizadas.add(categoriaRepository.getById(categoriaId));
 		}
-		
 		categoriaRepository.saveAll(categoriasAtualizadas);
 		this.categorias = categoriasAtualizadas;
 	}
