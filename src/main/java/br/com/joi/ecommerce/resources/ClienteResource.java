@@ -40,7 +40,7 @@ public class ClienteResource {
 	@Autowired
 	private ClienteRepository clienteRepository;
 	@Autowired
-	private EnderecoRepository enderecoRespository;	
+	private EnderecoRepository enderecoRepository;	
 	@Autowired
 	private EstadoRepository estadoRepository;
 	@Autowired
@@ -96,16 +96,48 @@ public class ClienteResource {
 	}
 	
 	@PostMapping(value="/{clienteId}/enderecos")
-	public ResponseEntity<EnderecoDto> cadastraEnderecoParaCliente(@PathVariable("clienteId") Integer clienteId, @RequestBody @Valid EnderecoForm form, UriComponentsBuilder uriBuilder){
+	public ResponseEntity<EnderecoDto> cadastraEnderecoParaCliente(@PathVariable("clienteId") Integer clienteId,
+			@RequestBody @Valid EnderecoForm form,
+			UriComponentsBuilder uriBuilder){
 
 		Cliente cliente = clienteRepository.getById(clienteId);
 		Endereco endereco = form.convertFormToObj(cliente,estadoRepository,cidadeRepository);	
-		enderecoRespository.save(endereco);		
+		enderecoRepository.save(endereco);		
 		
 		URI uri = uriBuilder.path("/clientes/{id}").buildAndExpand(endereco.getId()).toUri();
 		return ResponseEntity.created(uri).body(new EnderecoDto(endereco));
 	}
 	
+	@PutMapping(value="/{clienteId}/enderecos/{enderecoId}")
+	@Transactional
+	public ResponseEntity<EnderecoDto> atualizaEnderecoDoCliente(@PathVariable("clienteId") Integer clienteId,
+																@PathVariable("enderecoId") Integer enderecoId,
+			@RequestBody @Valid EnderecoForm form){
+
+//		Cliente cliente = clienteRepository.getById(clienteId);
+		Optional<Endereco> optional = enderecoRepository.findById(enderecoId);
+		
+			if(optional.isPresent()) {
+				Endereco enderecoAtualizado = form.atualizar(enderecoId, enderecoRepository,estadoRepository,cidadeRepository);
+				return ResponseEntity.ok(new EnderecoDto(enderecoAtualizado));
+			} else {
+				return ResponseEntity.notFound().build();
+			}
+	}
 	
+	@DeleteMapping(value="/{clienteId}/enderecos/{enderecoId}")
+	@Transactional
+	public ResponseEntity<?> deletaEnderecoDoCliente(@PathVariable("clienteId") Integer clienteId,
+													@PathVariable("enderecoId") Integer enderecoId,
+			@RequestBody @Valid EnderecoForm form){
+		Optional<Endereco> optional = enderecoRepository.findById(enderecoId);
+		
+		if(optional.isPresent()) {
+			enderecoRepository.deleteById(enderecoId);
+			return ResponseEntity.ok().build();
+			} else {	
+			return ResponseEntity.notFound().build();
+			}	
+	}
 
 }

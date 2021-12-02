@@ -7,6 +7,7 @@ import br.com.joi.ecommerce.domain.Cliente;
 import br.com.joi.ecommerce.domain.Endereco;
 import br.com.joi.ecommerce.domain.Estado;
 import br.com.joi.ecommerce.repositories.CidadeRepository;
+import br.com.joi.ecommerce.repositories.EnderecoRepository;
 import br.com.joi.ecommerce.repositories.EstadoRepository;
 
 public class EnderecoForm {
@@ -67,16 +68,48 @@ public class EnderecoForm {
 		return "EnderecoForm [logradouro=" + logradouro + ", numero=" + numero + ", complemento=" + complemento
 				+ ", bairro=" + bairro + ", cep=" + cep + ", cidade=" + cidade + ", estado=" + estado + "]";
 	}
-
-	public Endereco convertFormToObj(Cliente cliente,EstadoRepository estadoRepository,CidadeRepository cidadeRepository) {	
+	
+	
+	public Endereco convertFormToObj(Cliente cliente,
+			EstadoRepository estadoRepository,
+			CidadeRepository cidadeRepository) {	
 		
-		Estado estado = new Estado(null, this.estado);
-		Cidade cidade = new Cidade(null, this.cidade, estado);	
+		//precisa criar algum tipo de validação para Estado e Cidade, para evitar objeto igual
+		Estado estado = new Estado(null, this.estado);	
 		estadoRepository.saveAll(Arrays.asList(estado));
-		cidadeRepository.saveAll(Arrays.asList(cidade));
-		Endereco endereco = new Endereco(null, this.logradouro, this.numero, this.complemento, this.bairro, this.cep, cliente, cidade);
-		return endereco;
 		
+		Cidade cidade = new Cidade(null, this.cidade, estado);
+		cidadeRepository.saveAll(Arrays.asList(cidade));
+		
+		 // precisa validar endereço, se algum outro objeto no banco tem o mesmo cep e numero, para evitar objeto igual
+		return new Endereco(null, this.logradouro, this.numero, this.complemento, this.bairro, this.cep, cliente, cidade);
 	}
+	
+	public Endereco atualizar(Integer enderecoId,
+			EnderecoRepository enderecoRepository,
+			EstadoRepository estadoRepository,
+			CidadeRepository cidadeRepository) {
+
+		Endereco endereco = enderecoRepository.getById(enderecoId);
+		Estado estado = new Estado(null, this.estado);
+		Cidade cidade = new Cidade(null, this.cidade, estado);
+	
+		
+		endereco.setLogradouro(logradouro);;
+		endereco.setNumero(numero);;
+		endereco.setComplemento(complemento);;
+		endereco.setBairro(bairro);;
+		endereco.setCep(cep);
+
+
+		endereco.setCidade(cidade);
+		cidadeRepository.saveAll(Arrays.asList(cidade));
+		
+		endereco.getCidade().setEstado(estado);;
+		estadoRepository.saveAll(Arrays.asList(estado));
+
+		return endereco;
+	}
+	
 
 }

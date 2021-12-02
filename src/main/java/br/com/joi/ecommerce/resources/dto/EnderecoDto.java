@@ -4,7 +4,6 @@ import br.com.joi.ecommerce.domain.Endereco;
 
 public class EnderecoDto {
 	
-	private Integer clienteId;
 	private Integer enderecoId;
 	private String logradouro;
 	private String numero;
@@ -22,14 +21,12 @@ public class EnderecoDto {
 		this.bairro = endereco.getBairro();
 		this.cep = endereco.getCep();
 		this.cidade = endereco.getCidade().getNome();
-		this.estado = endereco.getCidade().getEstado().getNome();
-		System.out.println(this);
-		
+		this.estado = endereco.getCidade().getEstado().getNome();	
 	}
 	
-	
-
-
+	public Integer getEnderecoId() {
+		return enderecoId;
+	}
 	public String getLogradouro() {
 		return logradouro;
 	}
@@ -51,14 +48,6 @@ public class EnderecoDto {
 	public String getEstado() {
 		return estado;
 	}
-	public Integer getClienteId() {
-		return clienteId;
-	}
-	public Integer getEnderecoId() {
-		return enderecoId;
-	}
-
-
 
 
 }

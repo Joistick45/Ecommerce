@@ -102,12 +102,15 @@ public class EcommerceApplication implements CommandLineRunner {
 		Cliente cliente1 = new Cliente(null,"Joi Macedo Pereira Neto", "joi@empresa.com","888888888-88", TipoCliente.PESSOAFISICA);
 		cliente1.getTelefones().addAll(Arrays.asList("1144445555","1144446666"));
 		
+		Cliente cliente2 = new Cliente(null,"José teste", "jose@empresa.com","888888888-88", TipoCliente.PESSOAFISICA);
+		cliente2.getTelefones().addAll(Arrays.asList("1144447777","1144448888"));
+		
 		Endereco endereco1 = new Endereco(null, "Rua das Flores", "100", "Apto 100","Vila Paulista" , "09000777", cliente1, cidade1);
 		Endereco endereco2 = new Endereco(null, "Rua das Pedras", "200", "Apto 200","Vila Carioca" ,"09000888", cliente1, cidade2);
 
 		cliente1.getEnderecos().addAll(Arrays.asList(endereco1,endereco2));
 		
-		clienteRepository.saveAll(Arrays.asList(cliente1));
+		clienteRepository.saveAll(Arrays.asList(cliente1,cliente2));
 		enderecoRepository.saveAll(Arrays.asList(endereco1,endereco2));
 		
 		
