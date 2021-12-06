@@ -128,8 +128,7 @@ public class ClienteResource {
 	@DeleteMapping(value="/{clienteId}/enderecos/{enderecoId}")
 	@Transactional
 	public ResponseEntity<?> deletaEnderecoDoCliente(@PathVariable("clienteId") Integer clienteId,
-													@PathVariable("enderecoId") Integer enderecoId,
-			@RequestBody @Valid EnderecoForm form){
+													@PathVariable("enderecoId") Integer enderecoId){
 		Optional<Endereco> optional = enderecoRepository.findById(enderecoId);
 		
 		if(optional.isPresent()) {
