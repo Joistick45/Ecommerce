@@ -75,6 +75,7 @@ public class ClienteResource {
 			}
 	}
 	
+	//
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> deletaCliente(@PathVariable Integer id){
@@ -110,11 +111,8 @@ public class ClienteResource {
 	
 	@PutMapping(value="/{clienteId}/enderecos/{enderecoId}")
 	@Transactional
-	public ResponseEntity<EnderecoDto> atualizaEnderecoDoCliente(@PathVariable("clienteId") Integer clienteId,
-																@PathVariable("enderecoId") Integer enderecoId,
+	public ResponseEntity<EnderecoDto> atualizaEnderecoDoCliente(@PathVariable("clienteId") Integer clienteId,@PathVariable("enderecoId") Integer enderecoId,
 			@RequestBody @Valid EnderecoForm form){
-
-//		Cliente cliente = clienteRepository.getById(clienteId);
 		Optional<Endereco> optional = enderecoRepository.findById(enderecoId);
 		
 			if(optional.isPresent()) {
@@ -125,6 +123,8 @@ public class ClienteResource {
 			}
 	}
 	
+	
+	//não deixa deletar endereço, se tiver pedido vinculado
 	@DeleteMapping(value="/{clienteId}/enderecos/{enderecoId}")
 	@Transactional
 	public ResponseEntity<?> deletaEnderecoDoCliente(@PathVariable("clienteId") Integer clienteId,

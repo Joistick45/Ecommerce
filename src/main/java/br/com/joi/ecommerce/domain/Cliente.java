@@ -146,14 +146,10 @@ public class Cliente implements Serializable{
 		return Objects.equals(id, other.id);
 	}
 
-
-
-
-	
-	
-	
-	
-	
-	
+	@Override
+	public String toString() {
+		return "Cliente [id=" + id + ", nome=" + nome + ", email=" + email + ", cpfOuCnpj=" + cpfOuCnpj + ", tipo="
+				+ tipo + ", enderecos=" + enderecos + ", telefones=" + telefones + ", pedidos=" + pedidos + "]";
+	}
 
 }

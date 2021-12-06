@@ -123,7 +123,11 @@ public class Pedido implements Serializable{
 		return Objects.equals(id, other.id);
 	}
 
-
+	@Override
+	public String toString() {
+		return "Pedido [id=" + id + ", timestamp=" + timestamp + ", pagamento=" + pagamento + ", cliente=" + cliente
+				+ ", enderecoDeEntrega=" + enderecoDeEntrega + ", itens=" + itens + "]";
+	}
 
 
 }
