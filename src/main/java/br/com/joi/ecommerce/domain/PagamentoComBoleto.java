@@ -44,6 +44,13 @@ public class PagamentoComBoleto extends Pagamento {
 		this.dataPagamento = dataPagamento;
 	}
 
+	@Override
+	public String toString() {
+		return "PagamentoComBoleto [dataVencimento=" + dataVencimento + ", dataPagamento=" + dataPagamento + "]";
+	}
+
+	
+	
 
 	
 

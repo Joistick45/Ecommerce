@@ -1,6 +1,9 @@
 package br.com.joi.ecommerce.resources;
 
+import java.net.URI;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import javax.validation.Valid;
 
@@ -61,15 +64,13 @@ public class PedidoResource {
 	
 	@PostMapping
 	public ResponseEntity<PedidoDto> novoPedido(@RequestBody @Valid PedidoForm form, UriComponentsBuilder uriBuilder) throws ParseException{
-		System.out.println(form.toString());
+	
 		Cliente cliente = clienteRepository.getById(form.getClienteId());
-		Endereco endereco = enderecoRepository.getById(form.getEnderecoId());
-		Produto produto = produtoRepository.getById(form.getProdutoId());
+		Endereco endereco = enderecoRepository.getById(form.getEnderecoDeEntregaId());
+		Pedido pedido = form.convertFormToObj(cliente, endereco, produtoRepository, pedidoRepository, pagamentoRepository, itemPedidoRepository);
 
+		form.teste();
 		
-		Pedido pedido = form.convertFormToObj(cliente, endereco, produto, pedidoRepository, pagamentoRepository, itemPedidoRepository);
-
-
 //		pedidoRepository.save(pedido);	
 //		URI uri = uriBuilder.path("/clientes/{id}").buildAndExpand(pedido.getId()).toUri();
 //		return ResponseEntity.created(uri).body(new PedidoDto(pedido));
