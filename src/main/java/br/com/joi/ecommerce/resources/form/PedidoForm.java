@@ -4,6 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import br.com.joi.ecommerce.domain.Cliente;
 import br.com.joi.ecommerce.domain.Endereco;
@@ -78,11 +83,11 @@ public class PedidoForm {
 			PedidoRepository pedidoRepository, PagamentoRepository pagamentoRepository,
 			ItemPedidoRepository itemPedidoRepository) throws ParseException {
 
-		// cria pedido
+		// cria ordem de pedido
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 		Pedido pedido = new Pedido(null, sdf.parse("05/12/2021 10:32"), cliente, endereco);
 
-		// seta metodo de pagamento
+		// seta metodo de pagamento do pedido
 		String[] informacoesPagamento = this.pagamento.toString().substring(1, this.pagamento.toString().length() - 1)
 				.split(", ");
 		ArrayList<String> listaDeValores = new ArrayList<>();
@@ -101,36 +106,54 @@ public class PedidoForm {
 					Integer.parseInt(listaDeValores.get(2)));
 		}
 
-
 		pedido.setPagamento(pagamento);
 		cliente.getPedidos().addAll(Arrays.asList(pedido));
 
 		pedidoRepository.saveAll(Arrays.asList(pedido));
 		pagamentoRepository.saveAll(Arrays.asList(pagamento));
-//
-//		Produto produto = produtoRepository.getById(1);
-//		
-//		// ITEM PEDIDO
-//		ItemPedido itemPedido = null;//new ItemPedido(pedido, produto, 0.00, 1, 2000.00);
-//
-//		pedido.getItens().addAll(Arrays.asList(itemPedido));
-//		produto.getItens().addAll(Arrays.asList(itemPedido));
-//
-//		itemPedidoRepository.saveAll(Arrays.asList(itemPedido));
-//
-//		return pedido;
-		return null;
-
+		
+		//monta carrinho com itens do pedido	
+		JSONArray itens = new JSONArray(this.itens);
+		
+		
+		Set<ItemPedido> itensPedido = new HashSet<>();
+	
+		for (Object object : itens) {		
+			JSONObject itensObject = new JSONObject(object.toString());
+			JSONObject produtoObject = itensObject.getJSONObject("produto");
+			
+			Produto produto = produtoRepository.getById(produtoObject.getInt("id"));
+			
+			ItemPedido itemPedido = new ItemPedido(pedido, produto, itensObject.getDouble("desconto"), itensObject.getInt("quantidade"), itensObject.getDouble("preco"));
+			pedido.getItens().addAll(Arrays.asList(itemPedido));
+			produto.getItens().addAll(Arrays.asList(itemPedido));
+			itensPedido.add(itemPedido);			
+		}
+		
+		itemPedidoRepository.saveAll(itensPedido);
+		return pedido;
 	}
 	
-	public String teste() {
-		
-		System.out.println(this.itens.toString());
-		
-		
-		
-		return null;	
-	}
+//	public String teste() {
+//
+//		JSONArray itens = new JSONArray(this.itens);
+//		
+//		for (Object object : itens) {		
+//			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//			JSONObject itensObject = new JSONObject(object.toString());
+//			JSONObject produtoObject = itensObject.getJSONObject("produto");
+//			System.out.println(itensObject);
+//			System.out.println(itensObject.getDouble("preco"));
+//			System.out.println(itensObject.getDouble("desconto"));
+//			System.out.println(itensObject.getDouble("quantidade"));		
+//			System.out.println(produtoObject);
+//			System.out.println(produtoObject.getInt("id"));
+//			
+//		}
+//
+//
+//		return null;	
+//	}
 	
 	
 }

@@ -68,12 +68,11 @@ public class PedidoResource {
 		Cliente cliente = clienteRepository.getById(form.getClienteId());
 		Endereco endereco = enderecoRepository.getById(form.getEnderecoDeEntregaId());
 		Pedido pedido = form.convertFormToObj(cliente, endereco, produtoRepository, pedidoRepository, pagamentoRepository, itemPedidoRepository);
-
-		form.teste();
 		
-//		pedidoRepository.save(pedido);	
-//		URI uri = uriBuilder.path("/clientes/{id}").buildAndExpand(pedido.getId()).toUri();
-//		return ResponseEntity.created(uri).body(new PedidoDto(pedido));
+		pedidoRepository.save(pedido);	
+		URI uri = uriBuilder.path("/pedidos/{id}").buildAndExpand(pedido.getId()).toUri();
+		
+		//return ResponseEntity.created(uri).body(new PedidoDto(pedido));
 		return null;
 	}
 }
